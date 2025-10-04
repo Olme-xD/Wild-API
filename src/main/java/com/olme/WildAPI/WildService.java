@@ -1,4 +1,7 @@
 package com.olme.WildAPI;
+import java.util.List;
+import java.util.Date;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,47 +14,51 @@ public class WildService {
      * Get all wild animals from the database.
      * @returns a string representation of all wild animals.
      */
-    public String getAllWildAnimals() {
-        return wildRepository.findAll().toString();
+    public List<Wild> getAllWildAnimals() {
+        return wildRepository.findAll();
     }
 
     /**
      * Get all wild animals from the database by id.
      * @param id
      */
-    public String getWildAnimalById(long id) {
-        return wildRepository.getWildAnimalsById(id).toString();
+    public Wild getWildAnimalById(long id) {
+        Optional<Wild> wild = wildRepository.findById(id);
+        if (wild.isPresent()) {
+            return wild.get();
+        }
+        return null;
     }
 
     /**
      * Set a new wild animal in the database.
-     * @param name
-     * @param description
-     * @param habitat
-     * @param age
+     * @param wild
      * @return the new wild animal.
      */
-    public Wild newWildAnimal(String name, String description, String habitat, double age) {
-        Wild wild = new Wild(name, description, habitat, age, null);
+    public Wild newWildAnimal(Wild wild) {
+        if (wild.getActiveDate() == null) {
+            wild.setActiveDate(new Date());
+        }
         return wildRepository.save(wild);
     }
 
     /**
      * Update a wild animal in the database.
      * @param id
-     * @param name
-     * @param description
-     * @param habitat
-     * @param age
+     * @param wild
      * @return the updated wild animal.
      */
-    public Wild updateWildAnimal(long id, String name, String description, String habitat, double age) {
-        Wild wild = wildRepository.findById(id).orElseThrow();
-        wild.setName(name);
-        wild.setDescription(description);
-        wild.setHabitat(habitat);
-        wild.setAge(age);
-        return wildRepository.save(wild);
+    public Wild updateWildAnimal(long id, Wild wild) {
+        Optional<Wild> existingWildOptional = wildRepository.findById(id);
+        if (existingWildOptional.isPresent()) {
+            Wild existingWild = existingWildOptional.get();
+            existingWild.setName(wild.getName());
+            existingWild.setDescription(wild.getDescription());
+            existingWild.setHabitat(wild.getHabitat());
+            existingWild.setAge(wild.getAge());
+            return wildRepository.save(existingWild);
+        }
+        return null;
     }
 
     /**
@@ -68,7 +75,7 @@ public class WildService {
      * @return the wild animal with the given habitat.
      */
     public Wild getWildAnimalByHabitat(String habitat) {
-        return wildRepository.findByHabitat(habitat);
+        return wildRepository.findByHabitat(habitat.toLowerCase());
     }
 
     /**
@@ -76,7 +83,7 @@ public class WildService {
      * @param name
      * @return a string representation of all wild animals containing the string.
      */
-    public String getWildAnimalContainingString(String name){
-        return wildRepository.getWildAnimalsByName(name).toString();
+    public List<Wild> getWildAnimalContainingString(String name){
+        return wildRepository.getWildAnimalsByName(name.toLowerCase());
     }
 }

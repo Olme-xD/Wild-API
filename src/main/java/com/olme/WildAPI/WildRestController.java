@@ -1,11 +1,13 @@
 package com.olme.WildAPI;
-import org.hibernate.annotations.UpdateTimestamp;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class WildRestController {
@@ -16,7 +18,7 @@ public class WildRestController {
      * Get all wild animals from the database.
      */
     @GetMapping("/wild")
-    public String getAllWildAnimals() {
+    public List<Wild> getAllWildAnimals() {
         return wildService.getAllWildAnimals();
     }
 
@@ -24,23 +26,23 @@ public class WildRestController {
      * Set a new wild animal in the database.
      */
     @PostMapping("/wild/new")
-    public Wild newWildAnimal(String name, String description, String habitat, double age) {
-        return wildService.newWildAnimal(name, description, habitat, age);
+    public Wild newWildAnimal(@RequestBody Wild wild) {
+        return wildService.newWildAnimal(wild);
     }
 
     /**
      * Update a wild animal in the database.
      */
     @PutMapping("/wild/update")
-    public Wild updateWildAnimal(long id, String name, String description, String habitat, double age) {
-        return wildService.updateWildAnimal(id, name, description, habitat, age);
+    public Wild updateWildAnimal(@RequestParam long id, @RequestBody Wild wild) {
+        return wildService.updateWildAnimal(id, wild);
     }
 
     /**
      * Delete a wild animal from the database.
      */
     @DeleteMapping("/wild/delete")
-    public String deleteWildAnimal(long id) {
+    public String deleteWildAnimal(@RequestParam long id) {
         wildService.deleteWildAnimal(id);
         return "Deleted wild animal with id: " + id;
     }
@@ -49,7 +51,7 @@ public class WildRestController {
      * Get all wild animals from the database by id.
      */
     @GetMapping("/wild/id")
-    public String getWildAnimalById(long id) {
+    public Wild getWildAnimalById(@RequestParam long id) {
         return wildService.getWildAnimalById(id);
     }
 
@@ -57,7 +59,7 @@ public class WildRestController {
      * Get all wild animals from the database by name.
      */
     @GetMapping("/wild/name")
-    public String getWildAnimalByName(String name) {
+    public List<Wild> getWildAnimalByName(@RequestParam String name) {
         return wildService.getWildAnimalContainingString(name);
     }
 
@@ -65,7 +67,7 @@ public class WildRestController {
      * Get all wild animals from the database by habitat.
      */
     @GetMapping("/wild/habitat")
-    public Wild getWildAnimalByHabitat(String habitat) {
+    public Wild getWildAnimalByHabitat(@RequestParam String habitat) {
         return wildService.getWildAnimalByHabitat(habitat);
     }
 }
