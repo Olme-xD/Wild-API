@@ -1,6 +1,10 @@
 package com.olme.WildAPI;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +23,7 @@ public class WildRestController {
     /**
      * Set a new wild animal in the database.
      */
-    @GetMapping("/wild/new")
+    @PostMapping("/wild/new")
     public Wild newWildAnimal(String name, String description, String habitat, double age) {
         return wildService.newWildAnimal(name, description, habitat, age);
     }
@@ -27,7 +31,7 @@ public class WildRestController {
     /**
      * Update a wild animal in the database.
      */
-    @GetMapping("/wild/update")
+    @PutMapping("/wild/update")
     public Wild updateWildAnimal(long id, String name, String description, String habitat, double age) {
         return wildService.updateWildAnimal(id, name, description, habitat, age);
     }
@@ -35,7 +39,7 @@ public class WildRestController {
     /**
      * Delete a wild animal from the database.
      */
-    @GetMapping("/wild/delete")
+    @DeleteMapping("/wild/delete")
     public String deleteWildAnimal(long id) {
         wildService.deleteWildAnimal(id);
         return "Deleted wild animal with id: " + id;
