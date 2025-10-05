@@ -51,7 +51,7 @@ All endpoints use `http://localhost:8080` as the base URL.
   "habitat": "forest",
   "age": 12.5
 }
-
+```
 
 ## Demo
 
