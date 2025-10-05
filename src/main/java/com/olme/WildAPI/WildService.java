@@ -1,7 +1,9 @@
 package com.olme.WildAPI;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Date;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,7 @@ public class WildService {
      */
     public Wild getWildAnimalById(long id) {
         Optional<Wild> wild = wildRepository.findById(id);
-        if (wild.isPresent()) {
-            return wild.get();
-        }
-        return null;
+        return wild.orElseThrow(() -> new NoSuchElementException("Wild animal with id " + id + " not found"));
     }
 
     /**
@@ -49,16 +48,12 @@ public class WildService {
      * @return the updated wild animal.
      */
     public Wild updateWildAnimal(long id, Wild wild) {
-        Optional<Wild> existingWildOptional = wildRepository.findById(id);
-        if (existingWildOptional.isPresent()) {
-            Wild existingWild = existingWildOptional.get();
-            existingWild.setName(wild.getName());
-            existingWild.setDescription(wild.getDescription());
-            existingWild.setHabitat(wild.getHabitat());
-            existingWild.setAge(wild.getAge());
-            return wildRepository.save(existingWild);
-        }
-        return null;
+        Wild existingWild = wildRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Wild animal with id " + id + " not found"));
+        existingWild.setName(wild.getName());
+        existingWild.setDescription(wild.getDescription());
+        existingWild.setHabitat(wild.getHabitat());
+        existingWild.setAge(wild.getAge());
+        return wildRepository.save(existingWild);
     }
 
     /**
@@ -66,7 +61,12 @@ public class WildService {
      * @param id
      */
     public void deleteWildAnimal(long id) {
-        wildRepository.deleteById(id);
+        if (wildRepository.existsById(id)) {
+            wildRepository.deleteById(id);
+            System.out.println("Wild animal with id " + id + " deleted");
+        } else {
+            throw new NoSuchElementException("Wild animal with id " + id + " not found");
+        }
     }
 
     /**
@@ -75,7 +75,12 @@ public class WildService {
      * @return the wild animal with the given habitat.
      */
     public Wild getWildAnimalByHabitat(String habitat) {
-        return wildRepository.findByHabitat(habitat.toLowerCase());
+        if(habitat == null || habitat.isEmpty()) {
+            throw new IllegalArgumentException("Habitat cannot be null or empty");
+        } else if(wildRepository.findByHabitat(habitat) == null) {
+            throw new NoSuchElementException("Wild animal with habitat " + habitat + " not found");
+        }
+        return wildRepository.findByHabitat(habitat);
     }
 
     /**
@@ -84,6 +89,11 @@ public class WildService {
      * @return a string representation of all wild animals containing the string.
      */
     public List<Wild> getWildAnimalContainingString(String name){
-        return wildRepository.getWildAnimalsByName(name.toLowerCase());
+        if(name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        } else if(wildRepository.getWildAnimalsByName(name).isEmpty()) {
+            throw new NoSuchElementException("No wild animals containing the string " + name + " found");
+        }
+        return wildRepository.getWildAnimalsByName(name);
     }
 }
