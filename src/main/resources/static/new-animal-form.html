@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Animal Gallery</title>
+		<link rel="icon" href="images/icon.jpg" type="image/jpg">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+
+		<style>
+			body {
+				background-image: url(images/bg.jpg);
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-attachment: fixed;
+			}
+		</style>
+	</head>
+
+	<body class="text-white">
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+			<div class="container">
+				<a class="navbar-brand" href="index.html">
+				  <img class="img-fluid rounded" src="images/icon.jpg" alt="logo" style="height: 40px;">
+				</a>
+				<div class="navbar-nav">
+					<a class="nav-link" href="index.html">Home</a>
+					<a class="nav-link active fw-bold" href="new-animal-form.html">New Animal Form</a>
+					<a class="nav-link" href="about.html">About</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container mt-5 mb-4">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<div class="bg-light text-dark p-4 rounded">
+						<h2 class="mb-4">Add a New Animal</h2>
+
+						<form id="new-animal-form">
+							<div class="mb-3">
+								<label for="animalName" class="form-label">Animal Name</label>
+								<input type="text" class="form-control" id="animalName" placeholder="e.g., Tiger">
+							</div>
+
+							<div class="mb-3">
+								<label for="animalSpecies" class="form-label">Species</label>
+								<input type="text" class="form-control" id="animalSpecies" placeholder="e.g., Panthera tigris">
+							</div>
+
+							<div class="mb-3">
+								<label for="animalType" class="form-label">Type</label>
+								<select class="form-select" id="animalType">
+									<option selected>Choose...</option>
+									<option value="1">Mammal</option>
+									<option value="2">Bird</option>
+									<option value="3">Reptile</option>
+									<option value="4">Fish</option>
+									<option value="other">Other</option>
+								</select>
+							</div>
+
+							<div class="mb-3">
+								<label for="animalDescription" class="form-label">Description</label>
+								<textarea class="form-control" id="animalDescription" rows="8"></textarea>
+							</div>
+
+							<div class="mb-3">
+								<label for="animalImage" class="form-label">Animal Image</label>
+								<input class="form-control" type="file" id="animalImage">
+							</div>
+							
+							<button type="submit" class="btn btn-primary">Add Animal to Gallery</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="css/bootstrap.bundle.min.js"></script>
+		<script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const form = document.getElementById('new-animal-form');
+                
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const wildData = {
+                        name: document.getElementById('animalName').value,
+                        description: document.getElementById('animalDescription').value,
+                        habitat: document.getElementById('animalSpecies').value,
+                        age: 0
+                    };
+
+                    const formData = new FormData();
+                    formData.append('wild', new Blob([JSON.stringify(wildData)], {type: 'application/json'}));
+                    formData.append('profilePicture', document.getElementById('animalImage').files[0]);
+
+                    try {
+                        const response = await fetch('http://localhost:8080/api/wild/new', {
+                            method: 'POST',
+                            body: formData 
+                        });
+                        if (response.ok) {
+                            alert('Animal added successfully!');
+                            window.location.href = "index.html";
+                        } else {
+                            alert('Failed to add animal. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+        </script>
+	</body>
+</html>

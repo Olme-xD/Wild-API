@@ -17,8 +17,9 @@ public class Wild {
 
     String description;
     String habitat;
-    double age;
+    Double age;
     Date activeDate;
+    String imageUrl;
 
     public Wild() {}
 
@@ -76,5 +77,13 @@ public class Wild {
 
     public void setActiveDate(Date activeDate) {
         this.activeDate = activeDate;
-    } 
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

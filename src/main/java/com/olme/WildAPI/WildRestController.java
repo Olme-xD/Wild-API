@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 public class WildRestController {
@@ -17,23 +19,23 @@ public class WildRestController {
     /**
      * Get all wild animals from the database.
      */
-    @GetMapping("/wild")
+    @GetMapping("/api/wild")
     public List<Wild> getAllWildAnimals() {
         return wildService.getAllWildAnimals();
     }
 
     /**
-     * Set a new wild animal in the database.
+     * Put a new wild animal in the database.
      */
-    @PostMapping("/wild/new")
-    public Wild newWildAnimal(@RequestBody Wild wild) {
-        return wildService.newWildAnimal(wild);
+    @PostMapping("/api/wild/new")
+    public Wild saveNewAnimal(@RequestPart("wild") Wild wild, @RequestParam("profilePicture") MultipartFile profilePicture) {
+        return wildService.saveNewAnimal(wild, profilePicture);
     }
 
     /**
      * Update a wild animal in the database.
      */
-    @PutMapping("/wild/update")
+    @PutMapping("/api/wild/update")
     public Wild updateWildAnimal(@RequestParam long id, @RequestBody Wild wild) {
         return wildService.updateWildAnimal(id, wild);
     }
@@ -41,7 +43,7 @@ public class WildRestController {
     /**
      * Delete a wild animal from the database.
      */
-    @DeleteMapping("/wild/delete")
+    @DeleteMapping("/api/wild/delete")
     public String deleteWildAnimal(@RequestParam long id) {
         wildService.deleteWildAnimal(id);
         return "Deleted wild animal with id: " + id;
@@ -50,7 +52,7 @@ public class WildRestController {
     /**
      * Get all wild animals from the database by id.
      */
-    @GetMapping("/wild/id")
+    @GetMapping("/api/wild/id")
     public Wild getWildAnimalById(@RequestParam long id) {
         return wildService.getWildAnimalById(id);
     }
@@ -58,7 +60,7 @@ public class WildRestController {
     /**
      * Get all wild animals from the database by name.
      */
-    @GetMapping("/wild/name")
+    @GetMapping("/api/wild/name")
     public List<Wild> getWildAnimalByName(@RequestParam String name) {
         return wildService.getWildAnimalContainingString(name);
     }
@@ -66,7 +68,7 @@ public class WildRestController {
     /**
      * Get all wild animals from the database by habitat.
      */
-    @GetMapping("/wild/habitat")
+    @GetMapping("/api/wild/habitat")
     public Wild getWildAnimalByHabitat(@RequestParam String habitat) {
         return wildService.getWildAnimalByHabitat(habitat);
     }

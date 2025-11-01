@@ -1,4 +1,9 @@
 package com.olme.WildAPI;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Date;
@@ -6,11 +11,44 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class WildService {
     @Autowired
     private WildRepository wildRepository;
+
+    /**
+     * Set a new wild animal in the database with profile picture.
+     * @param wild
+     * @param profilePicture
+     * @return the new wild animal.
+     */
+    public Wild saveNewAnimal(Wild wild, MultipartFile profilePicture) {
+        Wild newAnimal = wildRepository.save(wild);
+        String originalFileName = profilePicture.getOriginalFilename();
+
+        try {
+            if (originalFileName != null && originalFileName.contains(".")) {
+                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+                String fileName = String.valueOf(newAnimal.getWildId()) + "." + fileExtension;
+                Path filePath = Paths.get("src/main/resources/static/images/" + fileName);
+
+                InputStream inputStream = profilePicture.getInputStream();
+
+                Files.createDirectories(Paths.get("src/main/resources/static/images/"));
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                
+                newAnimal.setImageUrl("images/" + fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to store profile picture", e);
+        }
+
+        // Save the entity *again* to update it with the imageUrl
+        return wildRepository.save(newAnimal);
+    }
 
     /**
      * Get all wild animals from the database.
@@ -37,6 +75,9 @@ public class WildService {
     public Wild newWildAnimal(Wild wild) {
         if (wild.getActiveDate() == null) {
             wild.setActiveDate(new Date());
+        }
+        if (wild.getHabitat() == null || wild.getHabitat().isEmpty()) {
+            wild.setHabitat("Unknown");
         }
         return wildRepository.save(wild);
     }

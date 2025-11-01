@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Animal Gallery</title>
+	<link rel="icon" href="images/icon.jpg" type="image/jpg">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<style>
+		body {
+			background-image: url(images/bg.jpg);
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-attachment: fixed;
+		}
+	</style>
+</head>
+
+<body class="text-white">
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img class="img-fluid rounded" src="images/icon.jpg" alt="logo" style="height: 40px;">
+			</a>
+			<div class="navbar-nav">
+				<a class="nav-link active fw-bold" href="index.html">Home</a>
+				<a class="nav-link" href="new-animal-form.html">New Animal Form</a>
+				<a class="nav-link" href="about.html">About</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container mt-5 mb-4" id="main-content"></div>
+
+	<script src="css/bootstrap.bundle.min.js"></script>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        const mainContent = document.getElementById('main-content');
+
+        fetch('http://localhost:8080/api/wild')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(animals => {
+                animals.forEach((animal, index) => {
+                    const columnClasses = (index % 2 === 0) 
+                        ? 'col-md-8 offset-md-1' // even row (align left)
+                        : 'col-md-8 offset-md-3'; // odd row (align right)
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'row mb-3';
+                    contentDiv.innerHTML = `
+                        <div class="${columnClasses}"> 
+                            <div class="card bg-light text-dark"> 
+                                <div class="card-body">
+                                    <h2 class="card-title mb-3">${animal.name}</h2>
+                                    <img src="${animal.imageUrl}" class="img-fluid rounded mb-3" alt="An image of ${animal.name}">
+                                    <p class="card-text">${animal.description}</p>
+                                    <a class="link" href="details.html">More Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    mainContent.appendChild(contentDiv);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>
+
+</html>

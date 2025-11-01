@@ -8,13 +8,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WildRepository extends JpaRepository<Wild, Long> {
-    @Query(value = "SELECT * FROM wild s WHERE s.wild_id = :id", nativeQuery = true)
-    List<Wild> getWildAnimalsById(long id);
 
     @Query(value = "SELECT * FROM wild s WHERE s.age >= :age", nativeQuery = true)
     List<Wild> getWildAnimalsByAge(@Param("age") double age);
 
-    @Query(value = "SELECT * FROM wild s WHERE s.name LIKE %:name%", nativeQuery = true)
+    @Query(value = "SELECT * FROM wild s WHERE s.name LIKE CONCAT('%', :name, '%')", nativeQuery = true)
     List<Wild> getWildAnimalsByName(@Param("name") String name);
 
     Wild findByHabitat(String habitat);
