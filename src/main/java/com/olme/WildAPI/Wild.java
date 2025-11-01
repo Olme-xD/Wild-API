@@ -15,20 +15,26 @@ public class Wild {
     @Column(nullable = false)
     String name;
 
+    @Column(length = 1000, nullable = false)
     String description;
+
+    @Column(length = 100, nullable = true)
+    String subspecies;
+    
     String habitat;
     Double age;
-    Date activeDate;
+    Date activeDate = Date.from(new Date().toInstant());
     String imageUrl;
+    String source;
 
     public Wild() {}
 
-    public Wild(String name, String description, String habitat, double age, Date activeDate) {
+    public Wild(String name, String description, String habitat, double age) {
         this.name = name;
         this.description = description;
         this.habitat = habitat;
         this.age = age;
-        this.activeDate = activeDate;
+        this.activeDate = Date.from(new Date().toInstant());
     }
 
     public long getWildId() {
@@ -55,6 +61,14 @@ public class Wild {
         this.description = description;
     }
 
+    public String getSubspecies() {
+        return subspecies;
+    }
+
+    public void setSubspecies(String subspecies) {
+        this.subspecies = subspecies;
+    }
+
     public String getHabitat() {
         return habitat;
     }
@@ -71,19 +85,19 @@ public class Wild {
         this.age = age;
     }
 
-    public Date getActiveDate() {
-        return activeDate;
-    }
-
-    public void setActiveDate(Date activeDate) {
-        this.activeDate = activeDate;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

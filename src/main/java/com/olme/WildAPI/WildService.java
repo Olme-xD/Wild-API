@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class WildService {
                 Files.createDirectories(Paths.get("src/main/resources/static/images/"));
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 
-                newAnimal.setImageUrl("images/" + fileName);
+                newAnimal.setImageUrl(fileName);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,11 +72,14 @@ public class WildService {
      * @return the new wild animal.
      */
     public Wild newWildAnimal(Wild wild) {
-        if (wild.getActiveDate() == null) {
-            wild.setActiveDate(new Date());
-        }
         if (wild.getHabitat() == null || wild.getHabitat().isEmpty()) {
             wild.setHabitat("Unknown");
+        }
+        if (wild.getSubspecies() == null || wild.getSubspecies().isEmpty()) {
+            wild.setSubspecies("Unknown");
+        }
+        if (wild.getSource() == null || wild.getSource().isEmpty()) {
+            wild.setSource("Unknown");  
         }
         return wildRepository.save(wild);
     }
@@ -89,11 +91,15 @@ public class WildService {
      * @return the updated wild animal.
      */
     public Wild updateWildAnimal(long id, Wild wild) {
-        Wild existingWild = wildRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Wild animal with id " + id + " not found"));
+        Wild existingWild = wildRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Wild animal with id " + id + " not found"));
         existingWild.setName(wild.getName());
         existingWild.setDescription(wild.getDescription());
         existingWild.setHabitat(wild.getHabitat());
         existingWild.setAge(wild.getAge());
+        existingWild.setSubspecies(wild.getSubspecies());
+        existingWild.setSource(wild.getSource());
+
         return wildRepository.save(existingWild);
     }
 

@@ -45,6 +45,11 @@
 							</div>
 
 							<div class="mb-3">
+								<label for="animalHabitat" class="form-label">Habitat</label>
+								<input type="text" class="form-control" id="animalHabitat" placeholder="e.g., Forests">
+							</div>
+
+							<div class="mb-3">
 								<label for="animalSpecies" class="form-label">Species</label>
 								<input type="text" class="form-control" id="animalSpecies" placeholder="e.g., Panthera tigris">
 							</div>
@@ -67,6 +72,11 @@
 							</div>
 
 							<div class="mb-3">
+								<label for="animalSource" class="form-label">Source Name</label>
+								<input type="text" class="form-control" id="animalSource" placeholder="e.g., Your Name">
+							</div>
+
+							<div class="mb-3">
 								<label for="animalImage" class="form-label">Animal Image</label>
 								<input class="form-control" type="file" id="animalImage">
 							</div>
@@ -81,20 +91,22 @@
 		<script src="css/bootstrap.bundle.min.js"></script>
 		<script>
             document.addEventListener("DOMContentLoaded", () => {
-                const form = document.getElementById('new-animal-form');
-                
-                form.addEventListener('submit', async (event) => {
-                    event.preventDefault();
+					const form = document.getElementById('new-animal-form');
 
-                    const wildData = {
-                        name: document.getElementById('animalName').value,
-                        description: document.getElementById('animalDescription').value,
-                        habitat: document.getElementById('animalSpecies').value,
-                        age: 0
-                    };
+					form.addEventListener('submit', async (event) => {
+						event.preventDefault();
 
-                    const formData = new FormData();
-                    formData.append('wild', new Blob([JSON.stringify(wildData)], {type: 'application/json'}));
+						const wildData = {
+							name: document.getElementById('animalName').value,
+							description: document.getElementById('animalDescription').value,
+							habitat: document.getElementById('animalHabitat').value, // Use the habitat field
+							subspecies: document.getElementById('animalSpecies').value, // Use species for subspecies
+							source: document.getElementById('animalSource').value, // Add the source
+							age: 0 // You can add an 'age' field to your form if you want
+						};
+
+						const formData = new FormData();
+						formData.append('wild', new Blob([JSON.stringify(wildData)], {type: 'application/json'}));
                     formData.append('profilePicture', document.getElementById('animalImage').files[0]);
 
                     try {

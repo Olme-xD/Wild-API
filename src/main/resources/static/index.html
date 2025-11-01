@@ -42,7 +42,7 @@
         
         const mainContent = document.getElementById('main-content');
 
-        fetch('http://localhost:8080/api/wild')
+        fetch(`http://localhost:8080/api/wild`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Response was not ok: ${response.statusText}`);
@@ -62,9 +62,9 @@
                             <div class="card bg-light text-dark"> 
                                 <div class="card-body">
                                     <h2 class="card-title mb-3">${animal.name}</h2>
-                                    <img src="${animal.imageUrl}" class="img-fluid rounded mb-3" alt="An image of ${animal.name}">
+                                    <img src="images/${animal.imageUrl}" class="img-fluid rounded mb-3" alt="An image of ${animal.name}">
                                     <p class="card-text">${animal.description}</p>
-                                    <a class="link" href="details.html">More Details</a>
+                                    <a class="link" href="details.html?id=${animal.wildId}">More Details</a>
                                 </div>
                             </div>
                         </div>
