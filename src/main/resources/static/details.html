@@ -69,7 +69,9 @@
 					`;
 				})
 				.catch(error => {
+					alert('Failed to load animal details. Please try again.');
 					console.error(error);
+					window.location.href = 'index.html';
 				});
 
 				addEventListener('click', (event) => {
@@ -87,6 +89,7 @@
 								window.location.href = 'index.html';
 							})
 							.catch(error => {
+								alert('Failed to delete animal. Please try again.');
 								console.error(error);
 							});
 						}

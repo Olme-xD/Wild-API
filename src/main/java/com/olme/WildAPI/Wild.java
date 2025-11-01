@@ -15,10 +15,10 @@ public class Wild {
     @Column(nullable = false)
     String name;
 
-    @Column(length = 1000, nullable = false)
+    @Column(length = 2000, nullable = false)
     String description;
 
-    @Column(length = 100, nullable = true)
+    @Column(nullable = false)
     String subspecies;
     
     String habitat;

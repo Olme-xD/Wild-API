@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Animal Gallery</title>
+		<link rel="icon" href="images/icon.jpg" type="image/jpg">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		
+        <style>
+			body {
+				background-image: url(images/bg.jpg);
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-attachment: fixed;
+			}
+		</style>
+	</head>
+
+	<body class="text-white">
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+			<div class="container">
+				<a class="navbar-brand" href="index.html">
+				  <img class="img-fluid rounded" src="images/icon.jpg" alt="logo" style="height: 40px;">
+				</a>
+				<div class="navbar-nav">
+					<a class="nav-link" href="index.html">Home</a>
+					<a class="nav-link" href="new-animal-form.html">New Animal Form</a>
+					<a class="nav-link" href="about.html">About</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container mt-5 mb-4">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<div class="bg-light text-dark p-4 rounded">
+						<h2 class="mb-4">Edit Animal</h2>
+
+						<form id="new-animal-form">
+							<div class="mb-3">
+								<label for="animalName" class="form-label">Animal Name</label>
+								<input type="text" class="form-control" id="animalName" placeholder="e.g., Tiger">
+							</div>
+
+							<div class="mb-3">
+								<label for="animalHabitat" class="form-label">Habitat</label>
+								<input type="text" class="form-control" id="animalHabitat" placeholder="e.g., Forests">
+							</div>
+
+							<div class="mb-3">
+								<label for="animalSubspecies" class="form-label">Species/Subspecies</label>
+								<input type="text" class="form-control" id="animalSubspecies" placeholder="e.g., Panthera tigris">
+							</div>
+
+							<div class="mb-3">
+								<label for="animalDescription" class="form-label">Description</label>
+								<textarea class="form-control" id="animalDescription" rows="8"></textarea>
+							</div>
+
+							<div class="mb-3">
+								<label for="animalSource" class="form-label">Source Name</label>
+								<input type="text" class="form-control" id="animalSource" placeholder="e.g., Your Name">
+							</div>
+
+							<div class="mb-3" style="display: none;">
+								<label for="animalImage" class="form-label">Animal Image</label>
+								<input class="form-control" type="file" id="animalImage">
+							</div>
+							
+							<button type="submit" class="btn btn-primary">Save Changes</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="css/bootstrap.bundle.min.js"></script>
+		
+		<script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const form = document.getElementById('new-animal-form');
+                const animalName = document.getElementById('animalName');
+                const animalHabitat = document.getElementById('animalHabitat');
+                const animalSubspecies = document.getElementById('animalSubspecies');
+                const animalDescription = document.getElementById('animalDescription');
+                const animalSource = document.getElementById('animalSource');
+                const formTitle = document.querySelector('h2');
+                const formButton = document.querySelector('button[type="submit"]');
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id');
+
+                if (!id) {
+                    alert('No animal ID found. Taking you back to index page.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                let originalAnimal = {};
+                fetch(`http://localhost:8080/api/wild/id?id=${id}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Cannot get animal data');
+                        return response.json();
+                    })
+                    .then(animal => {
+                        originalAnimal = animal;
+                        animalName.value = animal.name;
+                        animalHabitat.value = animal.habitat;
+                        animalSubspecies.value = animal.subspecies;
+                        animalDescription.value = animal.description;
+                        animalSource.value = animal.source;
+                    })
+                    .catch(error => {
+                        alert('Error loading data. Taking you back to index page.');
+                        window.location.href = 'index.html';
+                        return;
+                    });
+
+
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const updatedWildData = {
+                        wildId: originalAnimal.wildId,
+                        name: animalName.value,
+                        description: animalDescription.value,
+                        subspecies: animalSubspecies.value,
+                        habitat: animalHabitat.value,
+                        age: originalAnimal.age,
+                        imageUrl: originalAnimal.imageUrl,
+                        source: animalSource.value
+                    };
+
+                    try {
+                        const response = await fetch(`http://localhost:8080/api/wild/update?id=${id}`, {
+                            method: 'PUT',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(updatedWildData)
+                        });
+
+                        if (response.ok) {
+                            alert('Animal updated successfully!');
+                            window.location.href = `details.html?id=${id}`;
+                        } else {
+                            alert('Failed to update animal. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+        </script>
+	</body>
+</html>

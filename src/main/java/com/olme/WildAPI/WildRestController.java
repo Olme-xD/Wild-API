@@ -44,9 +44,8 @@ public class WildRestController {
      * Delete a wild animal from the database.
      */
     @DeleteMapping("/api/wild/delete")
-    public String deleteWildAnimal(@RequestParam long id) {
+    public void deleteWildAnimal(@RequestParam long id) {
         wildService.deleteWildAnimal(id);
-        return "Deleted wild animal with id: " + id;
     }
 
     /**
