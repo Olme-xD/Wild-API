@@ -41,23 +41,23 @@
 						<form id="new-animal-form">
 							<div class="mb-3">
 								<label for="animalName" class="form-label">Animal Name</label>
-								<input type="text" class="form-control" id="animalName" placeholder="e.g., Tiger" maxlength="50">
+								<input type="text" class="form-control" id="animalName" placeholder="e.g., Tiger" maxlength="50" required>
 							</div>
 
 							<div class="mb-3">
 								<label for="animalHabitat" class="form-label">Habitat</label>
-								<input type="text" class="form-control" id="animalHabitat" placeholder="e.g., Forests" maxlength="50">
+								<input type="text" class="form-control" id="animalHabitat" placeholder="e.g., Forests" maxlength="50" required>
 							</div>
 
 							<div class="mb-3">
 								<label for="animalSpecies" class="form-label">Species</label>
-								<input type="text" class="form-control" id="animalSpecies" placeholder="e.g., Panthera tigris" maxlength="50">
+								<input type="text" class="form-control" id="animalSpecies" placeholder="e.g., Panthera tigris" maxlength="50" required>
 							</div>
 
 							<div class="mb-3">
 								<label for="animalType" class="form-label">Type</label>
-								<select class="form-select" id="animalType">
-									<option selected>Choose...</option>
+								<select class="form-select" id="animalType" required>
+									<option value="" disabled selected>Choose...</option>
 									<option value="1">Mammal</option>
 									<option value="2">Bird</option>
 									<option value="3">Reptile</option>
@@ -68,17 +68,17 @@
 
 							<div class="mb-3">
 								<label for="animalDescription" class="form-label">Description</label>
-								<textarea class="form-control" id="animalDescription" rows="8" maxlength="990"></textarea>
+								<textarea class="form-control" id="animalDescription" rows="8" maxlength="990" required></textarea>
 							</div>
 
 							<div class="mb-3">
 								<label for="animalSource" class="form-label">Source Name</label>
-								<input type="text" class="form-control" id="animalSource" placeholder="e.g., Your Name" maxlength="50">
+								<input type="text" class="form-control" id="animalSource" placeholder="e.g., Your Name" maxlength="50" required>
 							</div>
 
 							<div class="mb-3">
 								<label for="animalImage" class="form-label">Animal Image</label>
-								<input class="form-control" type="file" id="animalImage">
+								<input class="form-control" type="file" id="animalImage" required>
 							</div>
 							
 							<button type="submit" class="btn btn-primary">Add Animal to Gallery</button>
@@ -99,15 +99,15 @@
 						const wildData = {
 							name: document.getElementById('animalName').value,
 							description: document.getElementById('animalDescription').value,
-							habitat: document.getElementById('animalHabitat').value, // Use the habitat field
-							subspecies: document.getElementById('animalSpecies').value, // Use species for subspecies
-							source: document.getElementById('animalSource').value, // Add the source
-							age: 0 // You can add an 'age' field to your form if you want
+							habitat: document.getElementById('animalHabitat').value,
+							subspecies: document.getElementById('animalSpecies').value,
+							source: document.getElementById('animalSource').value,
+							age: 0
 						};
-
+						
 						const formData = new FormData();
 						formData.append('wild', new Blob([JSON.stringify(wildData)], {type: 'application/json'}));
-                    formData.append('profilePicture', document.getElementById('animalImage').files[0]);
+                    	formData.append('profilePicture', document.getElementById('animalImage').files[0]);
 
                     try {
                         const response = await fetch('http://localhost:8080/api/wild/new', {
